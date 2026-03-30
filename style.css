@@ -2,11 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
 }
 
 body {
-  background: #f2f2f2;
+  background: #f3f3f3;
 }
 
 /* HEADER */
@@ -27,11 +27,11 @@ header {
 
 /* CARD */
 .item {
-  background: #fff;
+  background: white;
   border-radius: 10px;
   padding: 6px;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* IMAGE FIX */
@@ -58,8 +58,8 @@ button {
   background: #111;
   color: white;
   border: none;
-  padding: 5px 8px;
-  border-radius: 15px;
+  padding: 5px 10px;
+  border-radius: 20px;
   font-size: 12px;
 }
 
