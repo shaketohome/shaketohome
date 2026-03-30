@@ -1,12 +1,8 @@
-let cart = [];
+function order(item) {
+  let phone = "917702622925";
+  let message = "Hello, I want to order: " + item;
 
-function orderItem(item){
-  cart.push(item);
-  alert(item + " added");
-}
+  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
-function whatsappOrder(){
-  let msg = "Order:\n" + cart.join("\n");
-  let url = "https://wa.me/917702622925?text=" + encodeURIComponent(msg);
-  window.open(url);
+  window.open(url, "_blank");
 }
