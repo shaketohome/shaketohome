@@ -9,107 +9,85 @@
 
 <body>
 
-<!-- HEADER -->
-<header>
+<!-- NAVBAR -->
+<nav>
   <h1>🥤 ShakeToHome</h1>
-  <p>Fresh Milkshakes Delivered in Bhupalpally</p>
-</header>
+  <span>Bhupalpally</span>
+</nav>
 
-<!-- SEARCH -->
-<input type="text" id="search" placeholder="Search your drink...">
+<!-- HERO -->
+<section class="hero">
+  <h2>Fresh Shakes Delivered Fast 🚀</h2>
+  <p>Order your favorite drinks instantly</p>
+</section>
 
 <!-- PRODUCTS -->
-<div class="container" id="products">
+<section class="products">
 
-  <!-- Milkshakes -->
-  <h2>Milkshakes</h2>
+<h2>Milkshakes</h2>
 
-  <div class="card">
-    <img src="images/oreo.jpg">
-    <h3>Oreo Shake</h3>
-    <button onclick="orderItem('Oreo Shake')">Order</button>
-  </div>
+<div class="grid">
 
-  <div class="card">
-    <img src="images/kitkat.jpg">
-    <h3>KitKat Shake</h3>
-    <button onclick="orderItem('KitKat Shake')">Order</button>
-  </div>
+<div class="card">
+<img src="images/oreo.jpg">
+<h3>Oreo Shake</h3>
+<p>₹120</p>
+<button onclick="orderItem('Oreo Shake')">Add</button>
+</div>
 
-  <div class="card">
-    <img src="images/strawberry.jpg">
-    <h3>Strawberry Shake</h3>
-    <button onclick="orderItem('Strawberry Shake')">Order</button>
-  </div>
+<div class="card">
+<img src="images/kitkat.jpg">
+<h3>KitKat Shake</h3>
+<p>₹130</p>
+<button onclick="orderItem('KitKat Shake')">Add</button>
+</div>
 
-  <div class="card">
-    <img src="images/blackcurrant.jpg">
-    <h3>Black Currant Shake</h3>
-    <button onclick="orderItem('Black Currant Shake')">Order</button>
-  </div>
+<div class="card">
+<img src="images/strawberry.jpg">
+<h3>Strawberry Shake</h3>
+<p>₹110</p>
+<button onclick="orderItem('Strawberry Shake')">Add</button>
+</div>
 
-  <div class="card">
-    <img src="images/chocolate.jpg">
-    <h3>Chocolate Shake</h3>
-    <button onclick="orderItem('Chocolate Shake')">Order</button>
-  </div>
-
-  <!-- Lassi -->
-  <h2>Lassi</h2>
-
-  <div class="card">
-    <img src="images/strawberry-lassi.jpg">
-    <h3>Strawberry Lassi</h3>
-    <button onclick="orderItem('Strawberry Lassi')">Order</button>
-  </div>
-
-  <div class="card">
-    <img src="images/chocolate-lassi.jpg">
-    <h3>Chocolate Lassi</h3>
-    <button onclick="orderItem('Chocolate Lassi')">Order</button>
-  </div>
-
-  <!-- Juices -->
-  <h2>Juices</h2>
-
-  <div class="card">
-    <img src="images/grapes.jpg">
-    <h3>Grapes Juice</h3>
-    <button onclick="orderItem('Grapes Juice')">Order</button>
-  </div>
-
-  <div class="card">
-    <img src="images/karbuja.jpg">
-    <h3>Karbuja Juice</h3>
-    <button onclick="orderItem('Karbuja Juice')">Order</button>
-  </div>
-
-  <div class="card">
-    <img src="images/watermelon.jpg">
-    <h3>Watermelon Juice</h3>
-    <button onclick="orderItem('Watermelon Juice')">Order</button>
-  </div>
-
-  <div class="card">
-    <img src="images/pineapple.jpg">
-    <h3>Pineapple Juice</h3>
-    <button onclick="orderItem('Pineapple Juice')">Order</button>
-  </div>
-
-  <!-- Fruit Salad -->
-  <h2>Special</h2>
-
-  <div class="card">
-    <img src="images/fruitsalad.jpg">
-    <h3>Fruit Salad</h3>
-    <button onclick="orderItem('Fruit Salad')">Order</button>
-  </div>
+<div class="card">
+<img src="images/chocolate.jpg">
+<h3>Chocolate Shake</h3>
+<p>₹140</p>
+<button onclick="orderItem('Chocolate Shake')">Add</button>
+</div>
 
 </div>
 
-<!-- FLOATING BUTTONS -->
-<a href="tel:+919999999999" class="call-btn">📞</a>
-<a href="#" onclick="whatsappOrder()" class="whatsapp-btn">💬</a>
+<h2>Juices</h2>
+
+<div class="grid">
+
+<div class="card">
+<img src="images/watermelon.jpg">
+<h3>Watermelon Juice</h3>
+<p>₹80</p>
+<button onclick="orderItem('Watermelon Juice')">Add</button>
+</div>
+
+<div class="card">
+<img src="images/pineapple.jpg">
+<h3>Pineapple Juice</h3>
+<p>₹90</p>
+<button onclick="orderItem('Pineapple Juice')">Add</button>
+</div>
+
+</div>
+
+</section>
+
+<!-- CART BAR -->
+<div class="cart-bar" onclick="whatsappOrder()">
+  🛒 View Cart & Order
+</div>
+
+<!-- FLOAT -->
+<a href="tel:+917702622925" class="call">📞</a>
+<a href="#" onclick="whatsappOrder()" class="whatsapp">💬</a>
 
 <script src="script.js"></script>
 
