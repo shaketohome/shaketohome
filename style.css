@@ -18,10 +18,6 @@ body {
   color: white;
 }
 
-.logo {
-  font-weight: bold;
-}
-
 .nav {
   display: flex;
   gap: 8px;
@@ -51,21 +47,15 @@ body {
   color: white;
 }
 
-.hero h1 {
-  font-size: 18px;
-  margin-bottom: 15px;
-}
-
-/* INPUT */
 .hero input {
   width: 100%;
   padding: 12px;
-  margin-bottom: 10px;
+  margin-top: 10px;
   border-radius: 25px;
   border: none;
 }
 
-/* GRID FIX */
+/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -73,7 +63,6 @@ body {
   padding: 10px;
 }
 
-/* CARD */
 .item {
   background: white;
   border-radius: 10px;
@@ -81,7 +70,6 @@ body {
   text-align: center;
 }
 
-/* IMAGE FIX */
 .item img {
   width: 100%;
   height: 90px;
@@ -89,21 +77,31 @@ body {
   border-radius: 8px;
 }
 
-/* TEXT */
-.item h3 {
-  font-size: 12px;
-}
-
-.item p {
-  font-weight: bold;
-}
-
-/* BUTTON */
 .item button {
   width: 100%;
-  padding: 6px;
   background: #ff5200;
   color: white;
   border: none;
+  padding: 6px;
   border-radius: 20px;
+}
+
+/* ORDER BAR */
+.orderBar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.orderBar button {
+  background: #ff5200;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 25px;
 }
