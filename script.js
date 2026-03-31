@@ -14,8 +14,9 @@ function getLocation() {
 
       userLocation = "https://maps.google.com/?q=" + lat + "," + lon;
 
+      // Show clean text (not link)
       document.getElementById("locationInput").value =
-        "📍 Location set ✔";
+        "📍 Location captured";
     },
     () => {
       alert("Please allow location");
@@ -37,24 +38,25 @@ function checkout() {
     return;
   }
 
-  let msg = "Order:%0A";
+  let msg = "Order:\n";
   let total = 0;
 
   cart.forEach((i) => {
-    msg += i.name + " ₹" + i.price + "%0A";
+    msg += i.name + " ₹" + i.price + "\n";
     total += i.price;
   });
 
-  msg += "%0ATotal ₹" + total;
+  msg += "\nTotal: ₹" + total;
 
   if (userLocation) {
-    msg += "%0ALocation: " + userLocation;
+    msg += "\nLocation: " + userLocation;
   }
 
-  window.open(
+  let finalUrl =
     "https://wa.me/917702622925?text=" +
-      encodeURIComponent(msg)
-  );
+    encodeURIComponent(msg);
+
+  window.open(finalUrl, "_blank");
 }
 
 function openWhatsApp() {
