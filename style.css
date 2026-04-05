@@ -206,3 +206,41 @@ body {
 .qr-section img { width: 120px; height: 120px; border-radius: 8px; box-shadow: var(--shadow-soft); }
 
 .final-confirm-btn { width: 100%; justify-content: center; background: var(--success); }
+
+/* === PAYMENT MODAL UI === */
+.checkout-content { max-width: 400px; width: 95%; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-btn { font-size: 1.8rem; line-height: 1; color: var(--text-muted); cursor: pointer; }
+
+.pay-amt-title { font-size: 1rem; color: var(--text-muted); margin-bottom: 20px; text-align: center; }
+.pay-amt-title strong { font-size: 1.3rem; color: var(--dark); display: block; margin-top: 4px; }
+
+/* Selectable Cards */
+.payment-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.pay-option {
+    display: flex; align-items: center; padding: 16px; 
+    border: 2px solid var(--border); border-radius: 12px;
+    cursor: pointer; transition: all 0.2s ease; background: var(--white);
+}
+.pay-option input { margin-right: 12px; transform: scale(1.2); accent-color: var(--primary); }
+.pay-label { font-weight: 700; font-size: 1rem; color: var(--dark); }
+
+/* Highlight when selected */
+.pay-option.selected { border-color: var(--primary); background: var(--primary-light); }
+
+.small-text { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; text-align: center; font-weight: 600; }
+
+.upi-apps { display: flex; gap: 8px; margin-bottom: 20px; }
+.upi-btn {
+    flex: 1; padding: 12px 0; border: none; border-radius: 8px;
+    font-weight: 800; color: var(--white); cursor: pointer; font-size: 0.9rem;
+}
+.upi-btn.gpay { background: #1a73e8; }
+.upi-btn.phonepe { background: #5f259f; }
+.upi-btn.paytm { background: #00baf2; }
+
+.action-btn { width: 100%; justify-content: center; margin-top: 10px; }
+.success-btn { background: var(--success); }
+
+/* Loading text state */
+.btn-loading { opacity: 0.7; pointer-events: none; }
