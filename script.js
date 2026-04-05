@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
     // === 1. PRODUCT DATA (9 Items optimized for Unsplash CDN) ===
     const products = [
-        { id: 1, name: "Oreo Thick Shake", price: 120, img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&q=75&fm=webp" },
-        { id: 2, name: "KitKat Crunch", price: 130, img: "https://images.unsplash.com/photo-1541658016709-82533e94bc75?w=300&q=75&fm=webp" },
-        { id: 3, name: "Strawberry Shake", price: 110, img: "https://images.unsplash.com/photo-1550461716-ba4206587cce?w=300&q=75&fm=webp" },
-        { id: 4, name: "Chocolate Shake", price: 120, img: "https://images.unsplash.com/photo-1584314950669-e685f09908bd?w=300&q=75&fm=webp" },
-        { id: 5, name: "Sweet Lassi", price: 60, img: "https://images.unsplash.com/photo-1556610543-983196f7e4a1?w=300&q=75&fm=webp" },
-        { id: 6, name: "Watermelon Juice", price: 50, img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&q=75&fm=webp" },
-        { id: 7, name: "Pineapple Juice", price: 60, img: "https://images.unsplash.com/photo-1550828520-4cb496926bfc?w=300&q=75&fm=webp" },
-        { id: 8, name: "Grapes Juice", price: 70, img: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=75&fm=webp" },
-        { id: 9, name: "Black Currant", price: 140, img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300&q=75&fm=webp" }
-    ];
+  { id: 1, name: "Oreo Thick Shake", price: 120, img: "oreo.jpg" },
+  { id: 2, name: "KitKat Crunch", price: 130, img: "kitkatshake.jpg" },
+  { id: 3, name: "Strawberry Shake", price: 110, img: "strawberry shake.jpg" },
+  { id: 4, name: "Chocolate Shake", price: 120, img: "chocolate.jpg" },
+  { id: 5, name: "Sweet Lassi", price: 60, img: "lassi.jpg" },
+  { id: 6, name: "Watermelon Juice", price: 50, img: "watermelon.jpg" },
+  { id: 7, name: "Pineapple Juice", price: 60, img: "pineapple.jpg" },
+  { id: 8, name: "Grapes Juice", price: 70, img: "grape.jpg" },
+  { id: 9, name: "Black Currant", price: 140, img: "fruit box.jpg" }
+];
 
     // === 2. STATE MANAGEMENT ===
     let cart = {}; // Format: { productId: quantity }
