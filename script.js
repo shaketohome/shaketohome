@@ -152,35 +152,20 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 1. Show Fake Status Modal
+        // 1. Show Fake Status Modal instantly
         modal.classList.add("active");
-        step1.className = "step active";
-        step2.className = "step pending";
-        step3.className = "step pending";
+        step1.className = "step done";
+        step1.innerText = "✓ Order Received";
+        step2.className = "step done";
+        step2.innerText = "✓ Details Prepared";
+        step3.className = "step active";
+        step3.innerText = "✓ Opening WhatsApp...";
 
-        // 2. Animate through Fake Status Steps
-        setTimeout(() => {
-            step1.className = "step done";
-            step1.innerText = "✓ Order Received";
-            step2.className = "step active";
-        }, 800);
-
-        setTimeout(() => {
-            step2.className = "step done";
-            step2.innerText = "✓ Details Prepared";
-            step3.className = "step active";
-        }, 1600);
-
-        setTimeout(() => {
-            step3.className = "step done";
-            step3.innerText = "✓ Opening WhatsApp...";
-            
-            // Generate WhatsApp Text
-            generateWhatsAppMessage(cartKeys);
-            
-            // Hide Modal after redirecting
-            setTimeout(() => { modal.classList.remove("active"); }, 500);
-        }, 2400);
+        // 2. Trigger WhatsApp IMMEDIATELY (Bypassing async delays fixes iOS Safari popup blocking)
+        generateWhatsAppMessage(cartKeys);
+        
+        // Hide Modal after a delay (in case the user navigates back to the browser)
+        setTimeout(() => { modal.classList.remove("active"); }, 1500);
     });
 
     function generateWhatsAppMessage(cartKeys) {
@@ -204,8 +189,15 @@ document.addEventListener("DOMContentLoaded", () => {
             text += `\n*Delivery Location:* Not provided. Please ask the customer for their address.`;
         }
 
-        // Open WhatsApp
+        // --- SPECIFIC iOS FIX IMPLEMENTATION ---
         const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
-        window.open(waUrl, '_blank');
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isIOS) {
+            // iOS safe routing (Modifies current window, never gets blocked)
+            window.location.href = waUrl;
+        } else {
+            // Standard routing for Android / PC
+            window.open(waUrl, '_blank');
+        }
     }
-});
