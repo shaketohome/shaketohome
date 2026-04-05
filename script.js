@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   { id: 6, name: "Watermelon Juice", price: 50, img: "watermelon.jpg" },
   { id: 7, name: "Pineapple Juice", price: 60, img: "pineapple.jpg" },
   { id: 8, name: "Grapes Juice", price: 70, img: "grape.jpg" },
-  { id: 9, name: "Black Currant", price: 140, img: "fruit box.jpg" }
+  { id: 9, name: "Fruit Box", price: 140, img: "fruit box.jpg" }
 ];
     
     // === 2. STATE ===
