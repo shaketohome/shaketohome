@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let cart = {}; 
     let userLocation = null;
     const WA_NUMBER = "917702622925"; 
-    const BUSINESS_UPI_ID = "7569874341@ptsbi"; // Updated UPI String
+    const BUSINESS_UPI_ID = "7989846624-2@ybl"; // Updated UPI String
 
     // === 3. DOM ELEMENTS ===
     const gridContainer = document.getElementById("product-grid");
