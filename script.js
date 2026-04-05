@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // === 9. CHECKOUT & FAKE STATUS SYSTEM ===
+    // === 9. CHECKOUT & iOS FIX IMPLEMENTATION ===
     orderBtn.addEventListener("click", () => {
         const cartKeys = Object.keys(cart);
         
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 1. Show Fake Status Modal instantly
+        // 1. Show Fake Status Modal
         modal.classList.add("active");
         step1.className = "step done";
         step1.innerText = "✓ Order Received";
@@ -161,10 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
         step3.className = "step active";
         step3.innerText = "✓ Opening WhatsApp...";
 
-        // 2. Trigger WhatsApp IMMEDIATELY (Bypassing async delays fixes iOS Safari popup blocking)
+        // 2. Trigger WhatsApp IMMEDIATELY (Fixes iOS Safari popup blocking)
         generateWhatsAppMessage(cartKeys);
         
-        // Hide Modal after a delay (in case the user navigates back to the browser)
+        // Hide Modal shortly after redirecting (if user navigates back)
         setTimeout(() => { modal.classList.remove("active"); }, 1500);
     });
 
@@ -189,8 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
             text += `\n*Delivery Location:* Not provided. Please ask the customer for their address.`;
         }
 
-        // --- SPECIFIC iOS FIX IMPLEMENTATION ---
+        // Encode the message
         const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+        
+        // --- iOS Specific Fix ---
         const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isIOS) {
@@ -201,3 +203,4 @@ document.addEventListener("DOMContentLoaded", () => {
             window.open(waUrl, '_blank');
         }
     }
+});
