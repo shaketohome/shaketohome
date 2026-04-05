@@ -4,10 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShakeToHome Bhupalpally</title>
+        <!-- PWA & iOS Support Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff5200">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ShakeToHome">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Offline Banner UI (Hidden by default) -->
+    <style>
+        #offline-banner {
+            display: none; position: fixed; top: 0; left: 0; width: 100%;
+            background: #e74c3c; color: #ffffff; text-align: center;
+            padding: 10px; font-weight: 700; z-index: 9999; font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
     <meta name="theme-color" content="#ff5200">
 </head>
 <body>
+        <div id="offline-banner">⚠️ You are currently offline. Check your internet connection.</div>
 
     <!-- Fixed Header with Logo -->
     <header class="app-header">
