@@ -74,5 +74,40 @@
     </div>
 
     <script src="script.js"></script>
+        <!-- Advanced Checkout & UPI Payment Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-content checkout-content">
+            <div class="modal-header">
+                <h3>Complete Your Order</h3>
+                <span class="close-btn tap-effect" id="close-checkout">×</span>
+            </div>
+            
+            <div class="checkout-form">
+                <input type="text" id="customer-name" placeholder="Enter your Name" required>
+                
+                <div class="payment-section">
+                    <h4>Payment Options</h4>
+                    <p class="pay-amt">Amount to pay: <b id="pay-amount-display">₹0</b></p>
+                    
+                    <!-- UPI Deep Links -->
+                    <div class="upi-apps">
+                        <button class="upi-btn tap-effect gpay" onclick="triggerUPI('gpay')">GPay</button>
+                        <button class="upi-btn tap-effect phonepe" onclick="triggerUPI('phonepe')">PhonePe</button>
+                        <button class="upi-btn tap-effect paytm" onclick="triggerUPI('paytm')">Paytm</button>
+                    </div>
+
+                    <!-- QR Code Fallback -->
+                    <div class="qr-section">
+                        <p>Or scan to pay:</p>
+                        <img id="upi-qr" src="" alt="UPI QR Code" loading="lazy">
+                    </div>
+                </div>
+
+                <button class="order-btn final-confirm-btn tap-effect" id="confirm-whatsapp-btn">
+                    I Have Paid → Send via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
