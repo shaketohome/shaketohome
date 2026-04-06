@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ShakeToHome Restaurants</title>
+    <link rel="stylesheet" href="restaurants.css">
+    <meta name="theme-color" content="#ff5200">
+</head>
+<body>
+
+    <!-- Sticky Header -->
+    <header class="rest-header">
+        <a href="index.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        <div class="header-title">
+            <h1>Local Restaurants</h1>
+            <p>Delivering to your location</p>
+        </div>
+        <button class="add-rest-btn" id="open-form-btn">Partner</button>
+    </header>
+
+    <main class="rest-main">
+        <!-- Restaurant Grid (2 columns on mobile) -->
+        <div class="rest-grid" id="restaurant-grid">
+            <!-- Skeleton Loaders -->
+            <div class="skeleton-card"><div class="skel-img"></div><div class="skel-text"></div><div class="skel-text short"></div></div>
+            <div class="skeleton-card"><div class="skel-img"></div><div class="skel-text"></div><div class="skel-text short"></div></div>
+            <div class="skeleton-card"><div class="skel-img"></div><div class="skel-text"></div><div class="skel-text short"></div></div>
+            <div class="skeleton-card"><div class="skel-img"></div><div class="skel-text"></div><div class="skel-text short"></div></div>
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <p>No restaurants available yet.<br>Be the first to partner with us!</p>
+        </div>
+    </main>
+
+    <!-- Modal for Restaurant Owners -->
+    <div class="rest-modal-overlay" id="add-rest-modal">
+        <div class="rest-modal-content">
+            <div class="modal-header">
+                <h2>Add Your Restaurant</h2>
+                <span class="close-modal" id="close-form-btn">×</span>
+            </div>
+            <form id="add-rest-form">
+                <div class="input-group">
+                    <label>Restaurant Name</label>
+                    <input type="text" id="rest-name" required placeholder="e.g. Royal Shakes">
+                </div>
+                <div class="input-group">
+                    <label>Location / Area</label>
+                    <input type="text" id="rest-location" required placeholder="e.g. Main Market, Bhupalpally">
+                </div>
+                <div class="input-group">
+                    <label>Image URL (Unsplash/CDN)</label>
+                    <input type="url" id="rest-image" required placeholder="https://images.unsplash.com/...">
+                </div>
+                <button type="submit" class="submit-btn" id="submit-rest-btn">
+                    <span id="btn-text">Submit Restaurant</span>
+                    <div class="spinner" id="btn-spinner" style="display: none;"></div>
+                </button>
+                <p class="form-hint">Your restaurant will be reviewed before going live.</p>
+                <div id="form-msg" class="form-msg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module" src="restaurants.js"></script>
+</body>
+</html>
