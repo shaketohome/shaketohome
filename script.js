@@ -1,18 +1,19 @@
-// === 1. FIREBASE INTEGRATION ===
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, doc, setDoc, serverTimestamp, collection, onSnapshot, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDeUeVIT2rLalOnakBpG-foWuwxyTvbohY",
-    authDomain: "shaketohome-8a8fd.firebaseapp.com",
-    projectId: "shaketohome-8a8fd",
-    storageBucket: "shaketohome-8a8fd.firebasestorage.app",
-    messagingSenderId: "770234040999",
-    appId: "1:770234040999:web:921e74cb1c222a0858d182"
+  apiKey: "AIzaSyCThtrwNBs31H3KsM9DdVtY2ZJctnybp_0",
+  authDomain: "shaketohome-a1156.firebaseapp.com",
+  projectId: "shaketohome-a1156",
+  storageBucket: "shaketohome-a1156.appspot.com",
+  messagingSenderId: "592984047315",
+  appId: "1:592984047315:web:b8bc9c9f7dc1eeebfe5e26"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+window.db = db;
+console.log("Firebase connected");
 
 document.addEventListener("DOMContentLoaded", () => {
     // === 2. PRODUCT DATA ===
