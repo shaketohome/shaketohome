@@ -1,60 +1,62 @@
-// === 1. FIREBASE CONFIGURATION (V10 Modular SDK) ===
+// === 1. IMPORT FIREBASE V10 (Modular SDK via CDN for Browser) ===
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ⚠️ PASTE YOUR FIREBASE CONFIG HERE ⚠️
+// === 2. YOUR FIREBASE CONFIGURATION ===
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDeUeVIT2rLalOnakBpG-foWuwxyTvbohY",
+    authDomain: "shaketohome-8a8fd.firebaseapp.com",
+    projectId: "shaketohome-8a8fd",
+    storageBucket: "shaketohome-8a8fd.firebasestorage.app",
+    messagingSenderId: "770234040999",
+    appId: "1:770234040999:web:921e74cb1c222a0858d182",
+    measurementId: "G-N9J4SB21TD"
 };
 
-// Initialize Firebase
+// === 3. INITIALIZE FIREBASE, ANALYTICS, & FIRESTORE ===
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-// === 2. DOM ELEMENTS & ROUTING ===
-const isRestaurantPage = document.getElementById("restaurant-grid") !== null;
-const isMenuPage = document.getElementById("menu-grid") !== null;
-
+// === 4. DOM INITIALIZATION ===
 document.addEventListener("DOMContentLoaded", () => {
-    if (isRestaurantPage) {
-        initRestaurantListings();
-        initAddRestaurantForm();
-    }
-    if (isMenuPage) {
-        initMenuPage();
+    // Only run if we are on the restaurants page
+    if (document.getElementById("restaurant-grid")) {
+        fetchApprovedRestaurants();
+        setupAddRestaurantForm();
     }
 });
 
-// === 3. RESTAURANT LISTINGS (Consumers) ===
-async function initRestaurantListings() {
+// === 5. FETCH RESTAURANTS (Consumers see this) ===
+async function fetchApprovedRestaurants() {
     const grid = document.getElementById("restaurant-grid");
     const emptyState = document.getElementById("empty-state");
 
     try {
-        // Fetch ONLY approved restaurants
+        // Query: Only fetch restaurants where status is "approved"
         const q = query(collection(db, "restaurants"), where("status", "==", "approved"));
         const querySnapshot = await getDocs(q);
         
-        grid.innerHTML = ""; // Clear skeletons
+        // Clear skeleton loaders
+        grid.innerHTML = ""; 
         
         if (querySnapshot.empty) {
             emptyState.style.display = "block";
             return;
         }
 
+        // Loop through results and create Swiggy-style cards
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            
             const card = document.createElement("a");
-            card.className = "rest-card";
-            card.href = `restaurant.html?id=${doc.id}`; // Routing
+            card.className = "rest-card tap-effect";
+            // Optional: link to specific menu page if you build it later
+            card.href = `restaurant.html?id=${doc.id}`; 
             
             card.innerHTML = `
-                <img src="${data.image}" alt="${data.name}" class="rest-img" loading="lazy">
+                <img src="${data.image}" alt="${data.name}" class="rest-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300x150?text=No+Image'">
                 <div class="rest-info">
                     <h3 class="rest-name">${data.name}</h3>
                     <p class="rest-loc">${data.location}</p>
@@ -62,125 +64,74 @@ async function initRestaurantListings() {
             `;
             grid.appendChild(card);
         });
+
     } catch (error) {
         console.error("Error fetching restaurants:", error);
-        grid.innerHTML = `<p style="color:red; grid-column:1/-1; text-align:center;">Failed to load restaurants.</p>`;
+        grid.innerHTML = `<p style="color:#e74c3c; grid-column:1/-1; text-align:center; padding: 20px;">Failed to connect to database. Check internet or Firebase rules.</p>`;
     }
 }
 
-// === 4. ADD RESTAURANT FORM (Owners) ===
-function initAddRestaurantForm() {
+// === 6. ADD RESTAURANT FORM (Owners use this) ===
+function setupAddRestaurantForm() {
     const modal = document.getElementById("add-rest-modal");
     const openBtn = document.getElementById("open-form-btn");
     const closeBtn = document.getElementById("close-form-btn");
     const form = document.getElementById("add-rest-form");
     
-    // UI Elements
     const submitBtn = document.getElementById("submit-rest-btn");
     const btnText = document.getElementById("btn-text");
     const btnSpinner = document.getElementById("btn-spinner");
     const formMsg = document.getElementById("form-msg");
 
     // Modal Triggers
-    openBtn.addEventListener("click", () => modal.classList.add("active"));
-    closeBtn.addEventListener("click", () => modal.classList.remove("active"));
+    if(openBtn) openBtn.addEventListener("click", () => modal.classList.add("active"));
+    if(closeBtn) closeBtn.addEventListener("click", () => modal.classList.remove("active"));
 
-    // Form Submission
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById("rest-name").value.trim();
-        const location = document.getElementById("rest-location").value.trim();
-        const image = document.getElementById("rest-image").value.trim();
-
-        // Loading State
-        submitBtn.disabled = true;
-        btnText.style.display = "none";
-        btnSpinner.style.display = "block";
-        formMsg.className = "form-msg";
-        formMsg.innerText = "";
-
-        try {
-            await addDoc(collection(db, "restaurants"), {
-                name: name,
-                location: location,
-                image: image,
-                status: "pending", // REQUIRES ADMIN APPROVAL
-                createdAt: serverTimestamp()
-            });
-
-            formMsg.innerText = "Success! Submitted for approval ✅";
-            formMsg.classList.add("msg-success");
-            form.reset();
+    // Form Submission Logic
+    if(form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
             
-            setTimeout(() => { modal.classList.remove("active"); }, 2000);
+            const name = document.getElementById("rest-name").value.trim();
+            const location = document.getElementById("rest-location").value.trim();
+            const image = document.getElementById("rest-image").value.trim();
 
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            formMsg.innerText = "Error submitting restaurant.";
-            formMsg.classList.add("msg-error");
-        } finally {
-            submitBtn.disabled = false;
-            btnText.style.display = "block";
-            btnSpinner.style.display = "none";
-        }
-    });
-}
+            // 1. Show Loading UI
+            submitBtn.disabled = true;
+            btnText.style.display = "none";
+            btnSpinner.style.display = "block";
+            formMsg.className = "form-msg";
+            formMsg.innerText = "";
 
-// === 5. SPECIFIC RESTAURANT MENU PAGE ===
-async function initMenuPage() {
-    // Get ID from URL (e.g. restaurant.html?id=123)
-    const urlParams = new URLSearchParams(window.location.search);
-    const restId = urlParams.get('id');
+            try {
+                // 2. Save to Firebase Firestore
+                await addDoc(collection(db, "restaurants"), {
+                    name: name,
+                    location: location,
+                    image: image,
+                    status: "pending", // MUST BE APPROVED BY ADMIN IN FIREBASE CONSOLE
+                    createdAt: serverTimestamp()
+                });
 
-    if (!restId) {
-        window.location.href = "restaurants.html";
-        return;
-    }
+                // 3. Show Success UI
+                formMsg.innerText = "Success! Submitted for approval ✅";
+                formMsg.classList.add("msg-success");
+                form.reset();
+                
+                // Close modal after 2 seconds
+                setTimeout(() => { modal.classList.remove("active"); }, 2000);
 
-    const grid = document.getElementById("menu-grid");
-    const emptyState = document.getElementById("menu-empty");
-    const title = document.getElementById("menu-rest-name");
-    const subtitle = document.getElementById("menu-rest-location");
-
-    try {
-        // 1. Fetch Restaurant Info
-        const docRef = doc(db, "restaurants", restId);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            title.innerText = docSnap.data().name;
-            subtitle.innerText = docSnap.data().location;
-        } else {
-            title.innerText = "Restaurant Not Found";
-            return;
-        }
-
-        // 2. Fetch Products for this Restaurant
-        const q = query(collection(db, "products"), where("restaurantId", "==", restId));
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-            emptyState.style.display = "block";
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const card = document.createElement("div");
-            card.className = "prod-card";
-            
-            card.innerHTML = `
-                <img src="${data.image}" class="prod-img" loading="lazy">
-                <h4 class="prod-name">${data.name}</h4>
-                <p class="prod-price">₹${data.price}</p>
-                <button class="prod-add-btn" onclick="alert('Added to cart! (Cart logic future-ready)')">ADD</button>
-            `;
-            grid.appendChild(card);
+            } catch (error) {
+                // 4. Handle Errors
+                console.error("Error adding document: ", error);
+                formMsg.innerText = "Error submitting restaurant. Check Firestore Rules.";
+                formMsg.classList.add("msg-error");
+            } finally {
+                // Restore Button State
+                submitBtn.disabled = false;
+                btnText.style.display = "block";
+                btnSpinner.style.display = "none";
+            }
         });
-
-    } catch (error) {
-        console.error("Error loading menu:", error);
-        title.innerText = "Error loading menu";
     }
 }
