@@ -1,25 +1,29 @@
-// === 1. IMPORT FIREBASE V10 (Modular SDK) ===
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// === 1. IMPORT FIREBASE V12.11.0 (Modular SDK) ===
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-// === 2. YOUR EXACT FIREBASE CONFIGURATION ===
+// === 2. YOUR NEW FIREBASE CONFIGURATION ===
 const firebaseConfig = {
-    apiKey: "AIzaSyDeUeVIT2rLalOnakBpG-foWuwxyTvbohY",
-    authDomain: "shaketohome-8a8fd.firebaseapp.com",
-    projectId: "shaketohome-8a8fd",
-    storageBucket: "shaketohome-8a8fd.appspot.com", // Fixed URL
-    messagingSenderId: "770234040999",
-    appId: "1:770234040999:web:921e74cb1c222a0858d182"
+  apiKey: "AIzaSyCThtrwNBs31H3KsM9DdVtY2ZJctnybp_0",
+  authDomain: "shaketohome-a1156.firebaseapp.com",
+  projectId: "shaketohome-a1156",
+  storageBucket: "shaketohome-a1156.appspot.com", // Fixed bucket URL
+  messagingSenderId: "592984047315",
+  appId: "1:592984047315:web:b8bc9c9f7dc1eeebfe5e26"
+  // Analytics removed as requested
 };
 
-// Initialize Firebase & Firestore
+// === 3. INITIALIZE FIREBASE & FIRESTORE ===
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// === 3. DOM INITIALIZATION ===
+// Make Firestore usable globally (VERY IMPORTANT)
+window.db = db;
+
+console.log("Firebase connected");
+
+// === 4. DOM INITIALIZATION ===
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Restaurants.js loaded successfully.");
-    
     // Only run if we are on the restaurants page
     if (document.getElementById("restaurant-grid")) {
         fetchApprovedRestaurants();
@@ -27,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// === 4. FETCH RESTAURANTS ===
+// === 5. FETCH RESTAURANTS ===
 async function fetchApprovedRestaurants() {
     const grid = document.getElementById("restaurant-grid");
     const emptyState = document.getElementById("empty-state");
@@ -60,12 +64,12 @@ async function fetchApprovedRestaurants() {
         });
 
     } catch (error) {
-        console.error("Fetch Error:", error);
+        console.error(error);
         grid.innerHTML = `<p style="color:#e74c3c; grid-column:1/-1; text-align:center; padding: 20px;">Failed to connect to database.</p>`;
     }
 }
 
-// === 5. ADD RESTAURANT FORM & FIRESTORE WRITE ===
+// === 6. ADD RESTAURANT FORM & FIRESTORE WRITE ===
 function setupAddRestaurantForm() {
     const modal = document.getElementById("add-rest-modal");
     const openBtn = document.getElementById("open-form-btn");
@@ -82,14 +86,11 @@ function setupAddRestaurantForm() {
 
     if(form) {
         form.addEventListener("submit", async (e) => {
-            e.preventDefault(); // STRICT RULE: Prevent page reload
-            console.log("Form submitted. Gathering data...");
-
+            e.preventDefault(); 
+            
             const name = document.getElementById("rest-name").value.trim();
             const location = document.getElementById("rest-location").value.trim();
             const image = document.getElementById("rest-image").value.trim();
-
-            console.log("Data to send:", { name, location, image });
 
             // Show Loading UI
             submitBtn.disabled = true;
@@ -99,18 +100,14 @@ function setupAddRestaurantForm() {
             formMsg.innerText = "Submitting to database...";
 
             try {
-                console.log("Attempting Firestore connection...");
-                
-                // Write to Firestore
-                await addDoc(collection(db, "restaurants"), {
+                // Write to Firestore using the global db object
+                await addDoc(collection(window.db, "restaurants"), {
                     name: name,
                     location: location,
                     image: image,
                     status: "pending",
                     createdAt: serverTimestamp()
                 });
-
-                console.log("Successfully written to Firestore!");
 
                 // Show Success UI
                 formMsg.innerText = "Success! Submitted for approval ✅";
@@ -124,8 +121,8 @@ function setupAddRestaurantForm() {
 
             } catch (error) {
                 // EXACT ERROR HANDLING REQUESTED
-                console.error("Firestore Write Error: ", error);
-                alert("Error: " + error.message); // Will trigger an alert with the exact issue
+                console.error(error);
+                alert(error.message); 
                 formMsg.innerText = "Error submitting restaurant.";
                 formMsg.classList.add("msg-error");
             } finally {
@@ -135,7 +132,5 @@ function setupAddRestaurantForm() {
                 btnSpinner.style.display = "none";
             }
         });
-    } else {
-        console.error("Form element 'add-rest-form' not found in HTML.");
     }
 }
