@@ -68,8 +68,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const orderBtn = document.getElementById("order-btn");
 
     // === 5. INIT ===
-    if(gridContainer) renderProducts(products);
-    checkPostPaymentReturn(); 
+        // === CATEGORY FILTER SYSTEM ===
+    const categoryList = ["All", "Milkshakes", "Juices", "Cakes", "Puff", "Biryani", "Mojito"];
+    let activeCategory = "All";
+    const categoryBar = document.getElementById("category-bar");
+
+    function renderCategoryBar() {
+        if (!categoryBar) return;
+        categoryBar.innerHTML = "";
+        
+        categoryList.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = `category-btn tap-effect ${cat === activeCategory ? 'active' : ''}`;
+            btn.innerText = cat;
+            
+            btn.addEventListener("click", () => {
+                activeCategory = cat;
+                renderCategoryBar(); // Re-render to highlight active button
+                filterProducts();
+            });
+            
+            categoryBar.appendChild(btn);
+        });
+    }
+
+    function filterProducts() {
+        if (activeCategory === "All") {
+            renderProducts(products); // Show everything
+        } else {
+            const filtered = products.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
+            renderProducts(filtered); // Show only selected category
+        }
+    }
+
+    // === 5. INIT UPDATE ===
+    if (gridContainer) {
+        renderCategoryBar();
+        filterProducts(); // Initially loads "All" products
+    }
 
     // === 6. LOCATION LOGIC ===
     if(locationTrigger) {
