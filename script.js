@@ -19,39 +19,39 @@ console.log("Firebase connected");
 document.addEventListener("DOMContentLoaded", () => {
     
     // === 2. CATEGORIZED PRODUCT DATA ===
-    const products = [
-        // Milkshakes
-        { id: 1, name: "Oreo Shake", price: 120, category: "milkshakes", img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&q=75" },
-        { id: 2, name: "KitKat Shake", price: 130, category: "milkshakes", img: "https://images.unsplash.com/photo-1541658016709-82533e94bc75?w=300&q=75" },
-        { id: 3, name: "Strawberry Shake", price: 110, category: "milkshakes", img: "https://images.unsplash.com/photo-1550461716-ba4206587cce?w=300&q=75" },
-        { id: 4, name: "Chocolate Shake", price: 120, category: "milkshakes", img: "https://images.unsplash.com/photo-1584314950669-e685f09908bd?w=300&q=75" },
-        { id: 5, name: "Black Current", price: 140, category: "milkshakes", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300&q=75" },
-        
-        // Juices
-        { id: 6, name: "Pineapple Juice", price: 60, category: "juices", img: "https://images.unsplash.com/photo-1550828520-4cb496926bfc?w=300&q=75" },
-        { id: 7, name: "Karbuja Juice", price: 50, category: "juices", img: "https://images.unsplash.com/photo-1604544525867-0c67da4867af?w=300&q=75" },
-        { id: 8, name: "Watermelon Juice", price: 50, category: "juices", img: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=300&q=75" },
-        { id: 9, name: "Grapes Juice", price: 70, category: "juices", img: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=75" },
-        
-        // Cakes
-        { id: 10, name: "Butterscotch Cake", price: 350, category: "cakes", img: "https://images.unsplash.com/photo-1542826438-bd32f43d626f?w=300&q=75" },
-        { id: 11, name: "Pineapple Cake", price: 300, category: "cakes", img: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=300&q=75" },
-        { id: 12, name: "Black Forest", price: 400, category: "cakes", img: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=300&q=75" },
-        
-        // Puff
-        { id: 13, name: "Egg Puff", price: 20, category: "puff", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=300&q=75" },
-        { id: 14, name: "Curry Puff", price: 15, category: "puff", img: "https://images.unsplash.com/photo-1603569283847-aa295f0d016a?w=300&q=75" },
-        { id: 15, name: "Chicken Puff", price: 30, category: "puff", img: "https://images.unsplash.com/photo-1603569283847-aa295f0d016a?w=300&q=75" },
-        
-        // Biryani
-        { id: 16, name: "Chicken Dum Biryani", price: 220, category: "biryani", img: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=300&q=75" },
-        
-        // Mojito
-        { id: 17, name: "Blue Mojito", price: 80, category: "mojito", img: "https://images.unsplash.com/photo-1556881286-fc6915169721?w=300&q=75" },
-        { id: 18, name: "Lime Mojito", price: 70, category: "mojito", img: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=300&q=75" },
-        { id: 19, name: "Watermelon Mojito", price: 90, category: "mojito", img: "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=300&q=75" },
-        { id: 20, name: "Strawberry Mojito", price: 90, category: "mojito", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=300&q=75" }
-    ];
+   const products = [
+    // Milkshakes
+    { id: 1, name: "Oreo Shake", price: 120, category: "milkshakes", img: "oero.jpeg" },
+    { id: 2, name: "KitKat Shake", price: 130, category: "milkshakes", img: "kitkatshake.jpg" },
+    { id: 3, name: "Strawberry Shake", price: 110, category: "milkshakes", img: "strawberry shake.jpeg" },
+    { id: 4, name: "Chocolate Shake", price: 120, category: "milkshakes", img: "chocolate shake.jpeg" },
+    { id: 5, name: "Black Current", price: 140, category: "milkshakes", img: "chocolate.jpg" },
+
+    // Juices
+    { id: 6, name: "Pineapple Juice", price: 60, category: "juices", img: "pineapple.jpg" },
+    { id: 7, name: "Karbuja Juice", price: 50, category: "juices", img: "muskmelon.jpeg" },
+    { id: 8, name: "Watermelon Juice", price: 50, category: "juices", img: "watermelon juice.jpeg" },
+    { id: 9, name: "Grapes Juice", price: 70, category: "juices", img: "grape juice.jpeg" },
+
+    // Cakes
+    { id: 10, name: "Butterscotch Cake", price: 350, category: "cakes", img: "butterscotch cake.jpeg" },
+    { id: 11, name: "Pineapple Cake", price: 300, category: "cakes", img: "pineapple.jpeg" },
+    { id: 12, name: "Black Forest", price: 400, category: "cakes", img: "black forest.jpeg" },
+
+    // Puff
+    { id: 13, name: "Egg Puff", price: 20, category: "puff", img: "egg puff.jpeg" },
+    { id: 14, name: "Curry Puff", price: 15, category: "puff", img: "veg puff.jpeg" },
+    { id: 15, name: "Chicken Puff", price: 30, category: "puff", img: "chicken puff.jpeg" },
+
+    // Biryani
+    { id: 16, name: "Chicken Dum Biryani", price: 220, category: "biryani", img: "biryani.jpeg" },
+
+    // Mojito
+    { id: 17, name: "Blue Mojito", price: 80, category: "mojito", img: "blue mojito.jpeg" },
+    { id: 18, name: "Lime Mojito", price: 70, category: "mojito", img: "lime mojito.jpeg" },
+    { id: 19, name: "Watermelon Mojito", price: 90, category: "mojito", img: "watermelon mojito.jpeg" },
+    { id: 20, name: "Strawberry Mojito", price: 90, category: "mojito", img: "strawberry mojito.jpeg" }
+];
 
     // === 3. STATE ===
     let cart = {}; 
