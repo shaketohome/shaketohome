@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 2, name: "KitKat Shake", price: 130, category: "milkshakes", img: "https://images.unsplash.com/photo-1541658016709-82533e94bc75?w=300&q=75" },
         { id: 3, name: "Strawberry Shake", price: 110, category: "milkshakes", img: "https://images.unsplash.com/photo-1550461716-ba4206587cce?w=300&q=75" },
         { id: 4, name: "Chocolate Shake", price: 120, category: "milkshakes", img: "https://images.unsplash.com/photo-1584314950669-e685f09908bd?w=300&q=75" },
-        { id: 5, name: "Black Currant", price: 140, category: "milkshakes", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300&q=75" },
+        { id: 5, name: "Black Current", price: 140, category: "milkshakes", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300&q=75" },
         
         // Juices
         { id: 6, name: "Pineapple Juice", price: 60, category: "juices", img: "https://images.unsplash.com/photo-1550828520-4cb496926bfc?w=300&q=75" },
