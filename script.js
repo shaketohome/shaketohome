@@ -214,7 +214,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const pendingOrderData = localStorage.getItem("pendingOrder");
             if (!pendingOrderData) return;
             const { savedCart, savedTotal } = JSON.parse(pendingOrderData);
+            
+            // Pass the data to the final order function
             finalizeWhatsAppOrder(savedCart, savedTotal, "UPI (Paid)", null);
+            
+            // Clean up UI and cart
             localStorage.removeItem("pendingOrder");
             document.getElementById("post-payment-modal").classList.remove("active");
             cart = {};
@@ -223,8 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === 9. MASTER WHATSAPP & FIREBASE SYSTEM ===
-    function finalizeWhatsAppOrder(activeCart, total, paymentMode, appName) {
+    // === 9. MASTER WHATSAPP & FIREBASE SYSTEM (FIXED FOR SAVING) ===
+    // ADDED 'async' HERE SO WE CAN AWAIT FIRESTORE
+    async function finalizeWhatsAppOrder(activeCart, total, paymentMode, appName) {
         // 1. Generate Order ID
         const orderId = "SHK" + Math.floor(1000 + Math.random() * 9000);
         
@@ -237,16 +242,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const locationLink = userLocation ? `https://maps.google.com/?q=${userLocation}` : "Not provided";
 
-        // 3. Save to Firebase (Runs in background instantly)
-        setDoc(doc(db, "orders", orderId), {
-            orderId: orderId,
-            items: itemsString,
-            total: total,
-            paymentMethod: paymentMode,
-            location: locationLink,
-            status: "pending",
-            timestamp: serverTimestamp()
-        }).catch(err => console.error("Firebase Error:", err));
+        // 3. Save to Firebase securely BEFORE opening WhatsApp
+        console.log("Saving order to Firestore...");
+        try {
+            await setDoc(doc(window.db, "orders", orderId), {
+                orderId: orderId,
+                items: itemsString,
+                total: total,
+                paymentMethod: paymentMode,
+                location: locationLink,
+                status: "pending",
+                timestamp: serverTimestamp()
+            });
+            console.log("✅ Order saved successfully! ID: ", orderId);
+        } catch (error) {
+            console.error("❌ FIREBASE ERROR:", error);
+            alert("Database Error: " + error.message);
+        }
 
         // 4. Format WhatsApp Text
         let text = `Hi, I have placed an order.\n\n*Order ID:* ${orderId}\n\n*Order:*\n${itemsString}\n`;
