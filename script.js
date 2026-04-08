@@ -22,35 +22,35 @@ document.addEventListener("DOMContentLoaded", () => {
    const products = [
     // Milkshakes
     { id: 1, name: "Oreo Shake", price: 120, category: "milkshakes", img: "Oero.jpeg" },
-    { id: 2, name: "KitKat Shake", price: 130, category: "milkshakes", img: "kitkatshake.jpg" },
-    { id: 3, name: "Strawberry Shake", price: 110, category: "milkshakes", img: "strawberry shake.jpg" },
+    { id: 2, name: "KitKat Shake", price: 120, category: "milkshakes", img: "kitkatshake.jpg" },
+    { id: 3, name: "Strawberry Shake", price: 120, category: "milkshakes", img: "strawberry shake.jpg" },
     { id: 4, name: "Chocolate Shake", price: 120, category: "milkshakes", img: "chocolate shake.jpeg" },
-    { id: 5, name: "Black Current", price: 140, category: "milkshakes", img: "chocolate.jpg" },
+    { id: 5, name: "Black Current", price: 120, category: "milkshakes", img: "chocolate.jpg" },
 
     // Juices
     { id: 6, name: "Pineapple Juice", price: 60, category: "juices", img: "pineapple.jpeg" },
-    { id: 7, name: "Karbuja Juice", price: 50, category: "juices", img: "muskmelon.jpeg" },
-    { id: 8, name: "Watermelon Juice", price: 50, category: "juices", img: "watermelon juice.jpeg" },
-    { id: 9, name: "Grapes Juice", price: 70, category: "juices", img: "grape juice.jpeg" },
+    { id: 7, name: "Karbuja Juice", price: 60, category: "juices", img: "muskmelon.jpeg" },
+    { id: 8, name: "Watermelon Juice", price: 60, category: "juices", img: "watermelon juice.jpeg" },
+    { id: 9, name: "Grapes Juice", price: 60, category: "juices", img: "grape juice.jpeg" },
 
     // Cakes
-    { id: 10, name: "Butterscotch Cake", price: 350, category: "cakes", img: "butterscotch cake.jpeg" },
+    { id: 10, name: "Butterscotch Cake", price: 300, category: "cakes", img: "butterscotch cake.jpeg" },
     { id: 11, name: "Pineapple Cake", price: 300, category: "cakes", img: "pineapple cake.jpeg" },
-    { id: 12, name: "Black Forest", price: 400, category: "cakes", img: "black forest.jpeg" },
+    { id: 12, name: "Black Forest", price: 300, category: "cakes", img: "black forest.jpeg" },
 
     // Puff
-    { id: 13, name: "Egg Puff", price: 20, category: "puff", img: "egg puff.jpeg" },
-    { id: 14, name: "Curry Puff", price: 15, category: "puff", img: "veg puff.jpeg" },
+    { id: 13, name: "Egg Puff", price: 30, category: "puff", img: "egg puff.jpeg" },
+    { id: 14, name: "Curry Puff", price: 30, category: "puff", img: "veg puff.jpeg" },
     { id: 15, name: "Chicken Puff", price: 30, category: "puff", img: "chicken puff.jpeg" },
 
     // Biryani
-    { id: 16, name: "Chicken Dum Biryani", price: 220, category: "biryani", img: "biryani.jpeg" },
+    { id: 16, name: "Chicken Dum Biryani", price: 200, category: "biryani", img: "biryani.jpeg" },
 
     // Mojito
     { id: 17, name: "Blue Mojito", price: 80, category: "mojito", img: "blue mojito.jpeg" },
-    { id: 18, name: "Lime Mojito", price: 70, category: "mojito", img: "lime mojito.jpeg" },
-    { id: 19, name: "Watermelon Mojito", price: 90, category: "mojito", img: "watermelon mojito.jpeg" },
-    { id: 20, name: "Strawberry Mojito", price: 90, category: "mojito", img: "strawberry mojito.jpeg" }
+    { id: 18, name: "Lime Mojito", price: 80, category: "mojito", img: "lime mojito.jpeg" },
+    { id: 19, name: "Watermelon Mojito", price: 80, category: "mojito", img: "watermelon mojito.jpeg" },
+    { id: 20, name: "Strawberry Mojito", price: 80, category: "mojito", img: "strawberry mojito.jpeg" }
 ];
 
     // === 3. STATE ===
