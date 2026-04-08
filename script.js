@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, doc, setDoc, serverTimestamp, collection, onSnapshot, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+// === 1. FIREBASE CONFIGURATION ===
 const firebaseConfig = {
   apiKey: "AIzaSyCThtrwNBs31H3KsM9DdVtY2ZJctnybp_0",
   authDomain: "shaketohome-a1156.firebaseapp.com",
@@ -16,8 +17,8 @@ window.db = db;
 console.log("Firebase connected");
 
 document.addEventListener("DOMContentLoaded", () => {
-    // === 2. PRODUCT DATA ===
-     // === 2. PRODUCT DATA (Categorized) ===
+    
+    // === 2. CATEGORIZED PRODUCT DATA ===
     const products = [
         // Milkshakes
         { id: 1, name: "Oreo Shake", price: 120, category: "milkshakes", img: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&q=75" },
@@ -60,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === 4. DOM ELEMENTS ===
     const gridContainer = document.getElementById("product-grid");
+    const categoryBar = document.getElementById("category-bar"); // Added category element
     const searchInput = document.getElementById("search-input");
     const locationTrigger = document.getElementById("location-trigger");
     const locationInput = document.getElementById("location-input");
@@ -67,15 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const headerCartBadge = document.getElementById("cart-badge");
     const orderBtn = document.getElementById("order-btn");
 
-    // === 5. INIT ===
-        // === CATEGORY FILTER SYSTEM ===
+    // === 5. CATEGORY FILTER LOGIC ===
     const categoryList = ["All", "Milkshakes", "Juices", "Cakes", "Puff", "Biryani", "Mojito"];
     let activeCategory = "All";
-    const categoryBar = document.getElementById("category-bar");
 
     function renderCategoryBar() {
         if (!categoryBar) return;
-        categoryBar.innerHTML = "";
+        categoryBar.innerHTML = ""; // Clear existing
         
         categoryList.forEach(cat => {
             const btn = document.createElement("button");
@@ -84,8 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
             
             btn.addEventListener("click", () => {
                 activeCategory = cat;
-                renderCategoryBar(); // Re-render to highlight active button
-                filterProducts();
+                renderCategoryBar(); // Highlight new button
+                filterProducts();    // Filter grid
             });
             
             categoryBar.appendChild(btn);
@@ -94,20 +94,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function filterProducts() {
         if (activeCategory === "All") {
-            renderProducts(products); // Show everything
+            renderProducts(products); // Show all
         } else {
             const filtered = products.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
-            renderProducts(filtered); // Show only selected category
+            renderProducts(filtered); // Show filtered
         }
     }
 
-    // === 5. INIT UPDATE ===
-    if (gridContainer) {
-        renderCategoryBar();
-        filterProducts(); // Initially loads "All" products
+    // === 6. INIT ===
+    if(gridContainer) {
+        renderCategoryBar(); // Load categories
+        filterProducts();    // Load products
     }
+    checkPostPaymentReturn(); 
 
-    // === 6. LOCATION LOGIC ===
+    // === 7. LOCATION LOGIC ===
     if(locationTrigger) {
         locationTrigger.addEventListener("click", () => {
             if ("geolocation" in navigator) {
@@ -124,9 +125,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === 7. RENDER & CART SYSTEM ===
+    // === 8. RENDER & CART SYSTEM ===
     function renderProducts(items) {
         gridContainer.innerHTML = "";
+        
+        if (items.length === 0) {
+            gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No products found in this category.</p>`;
+            return;
+        }
+
         items.forEach(product => {
             const qty = cart[product.id] || 0;
             const card = document.createElement("div");
@@ -192,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === 8. PREMIUM PAYMENT MODAL ===
+    // === 9. PREMIUM PAYMENT MODAL ===
     const paymentModal = document.getElementById("payment-modal");
     const closePaymentBtn = document.getElementById("close-payment");
     const payOptions = document.querySelectorAll(".pay-option");
@@ -274,25 +281,20 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!pendingOrderData) return;
             const { savedCart, savedTotal } = JSON.parse(pendingOrderData);
             
-            // Pass the data to the final order function
             finalizeWhatsAppOrder(savedCart, savedTotal, "UPI (Paid)", null);
             
-            // Clean up UI and cart
             localStorage.removeItem("pendingOrder");
             document.getElementById("post-payment-modal").classList.remove("active");
             cart = {};
             updateCartUI();
-            renderProducts(products);
+            renderProducts(products); // Reset grid
         });
     }
 
-    // === 9. MASTER WHATSAPP & FIREBASE SYSTEM (FIXED FOR SAVING) ===
-    // ADDED 'async' HERE SO WE CAN AWAIT FIRESTORE
+    // === 10. MASTER WHATSAPP & FIREBASE SYSTEM ===
     async function finalizeWhatsAppOrder(activeCart, total, paymentMode, appName) {
-        // 1. Generate Order ID
         const orderId = "SHK" + Math.floor(1000 + Math.random() * 9000);
         
-        // 2. Build Item List String
         let itemsString = "";
         Object.keys(activeCart).forEach(id => {
             const product = products.find(p => p.id === parseInt(id));
@@ -301,7 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const locationLink = userLocation ? `https://maps.google.com/?q=${userLocation}` : "Not provided";
 
-        // 3. Save to Firebase securely BEFORE opening WhatsApp
         console.log("Saving order to Firestore...");
         try {
             await setDoc(doc(window.db, "orders", orderId), {
@@ -319,13 +320,11 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Database Error: " + error.message);
         }
 
-        // 4. Format WhatsApp Text
         let text = `Hi, I have placed an order.\n\n*Order ID:* ${orderId}\n\n*Order:*\n${itemsString}\n`;
         text += `*Total:* ₹${total}\n*Payment:* ${paymentMode}\n`;
         if (paymentMode === "UPI (Paid)") text += `*UPI ID:* ${BUSINESS_UPI_ID}\n`;
         text += `*Location:*\n${locationLink}`;
 
-        // 5. Open WhatsApp Immediately
         const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             window.location.href = waUrl;
