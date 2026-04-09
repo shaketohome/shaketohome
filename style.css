@@ -260,3 +260,17 @@ body { background-color: var(--bg-color); color: var(--dark); padding-top: 64px;
     border-color: var(--primary);
     box-shadow: 0 4px 10px rgba(255, 82, 0, 0.25);
 }
+/* === 🚀 NEW: SUCCESS OVERLAY ANIMATION === */
+.success-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--success); z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--white); text-align: center;
+    transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.success-overlay.active { transform: translateY(0); }
+.success-overlay .checkmark { 
+    font-size: 5rem; margin-bottom: 20px; 
+    animation: scaleUp 0.5s ease-out 0.3s both; 
+}
+@keyframes scaleUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
