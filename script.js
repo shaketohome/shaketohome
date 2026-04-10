@@ -17,36 +17,36 @@ window.db = db;
 console.log("Firebase connected");
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    // === ADVANCED: IN-APP BROWSER DETECTION ===
+    function isInAppBrowser() {
+        const ua = navigator.userAgent || navigator.vendor;
+        return /Instagram|FBAN|FBAV|WhatsApp/i.test(ua);
+    }
+
+    if (isInAppBrowser()) {
+        console.log("Opened inside in-app browser");
+        alert("📱 Notice: You are using an in-app browser (like Instagram). For automatic GPS tracking, please open this site in Chrome or Safari. You can still order without GPS!");
+    }
     
-    // === 2. CATEGORIZED PRODUCT DATA (YOUR EXACT IMAGES) ===
+    // === 2. CATEGORIZED PRODUCT DATA ===
     const products = [
-        // Milkshakes
         { id: 1, name: "Oreo Shake", price: 120, category: "milkshakes", img: "Oero.jpeg" },
         { id: 2, name: "KitKat Shake", price: 120, category: "milkshakes", img: "kitkatshake.jpg" },
         { id: 3, name: "Strawberry Shake", price: 120, category: "milkshakes", img: "strawberry shake.jpg" },
         { id: 4, name: "Chocolate Shake", price: 120, category: "milkshakes", img: "chocolate shake.jpeg" },
         { id: 5, name: "Black Current", price: 120, category: "milkshakes", img: "chocolate.jpg" },
-
-        // Juices
         { id: 6, name: "Pineapple Juice", price: 60, category: "juices", img: "pineapple.jpeg" },
         { id: 7, name: "Karbuja Juice", price: 60, category: "juices", img: "muskmelon.jpeg" },
         { id: 8, name: "Watermelon Juice", price: 60, category: "juices", img: "watermelon juice.jpeg" },
         { id: 9, name: "Grapes Juice", price: 60, category: "juices", img: "grape juice.jpeg" },
-
-        // Cakes
         { id: 10, name: "Butterscotch Cake", price: 300, category: "cakes", img: "butterscotch cake.jpeg" },
         { id: 11, name: "Pineapple Cake", price: 300, category: "cakes", img: "pineapple cake.jpeg" },
         { id: 12, name: "Black Forest", price: 300, category: "cakes", img: "black forest.jpeg" },
-
-        // Puff
         { id: 13, name: "Egg Puff", price: 30, category: "puff", img: "egg puff.jpeg" },
         { id: 14, name: "Curry Puff", price: 30, category: "puff", img: "veg puff.jpeg" },
         { id: 15, name: "Chicken Puff", price: 30, category: "puff", img: "chicken puff.jpeg" },
-
-        // Biryani
         { id: 16, name: "Chicken Dum Biryani", price: 200, category: "biryani", img: "biryani.jpeg" },
-
-        // Mojito
         { id: 17, name: "Blue Mojito", price: 80, category: "mojito", img: "blue mojito.jpeg" },
         { id: 18, name: "Lime Mojito", price: 80, category: "mojito", img: "lime mojito.jpeg" },
         { id: 19, name: "Watermelon Mojito", price: 80, category: "mojito", img: "watermelon mojito.jpeg" },
@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let cart = {}; 
     let userLocation = null;
     const WA_NUMBER = "917702622925"; 
-    const BUSINESS_UPI_ID = "7569874341@ptsbi"; 
 
     // === 4. DOM ELEMENTS ===
     const gridContainer = document.getElementById("product-grid");
@@ -87,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderCategoryBar(); 
                 filterProducts();    
             });
-            
             categoryBar.appendChild(btn);
         });
     }
@@ -101,45 +99,68 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // === 6. INIT ===
     if(gridContainer) {
         renderCategoryBar(); 
         filterProducts();    
     }
-    checkPostPaymentReturn(); 
 
-    // === 7. STRICT LOCATION LOGIC (AUTO-FETCH) ===
-    function fetchUserLocation() {
-        if ("geolocation" in navigator) {
-            locationInput.value = "Fetching GPS...";
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    userLocation = `${pos.coords.latitude},${pos.coords.longitude}`;
+    // === 6. SAFE LOCATION HANDLING (NON-BLOCKING) ===
+    function getLocationSafe() {
+        if (!navigator.geolocation) {
+            console.log("Geolocation not supported by this browser.");
+            if(locationInput) locationInput.value = "GPS not supported. Tap to try manually.";
+            return;
+        }
+
+        if(locationInput) locationInput.value = "Fetching GPS...";
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                userLocation = `${pos.coords.latitude},${pos.coords.longitude}`;
+                console.log("Location captured:", userLocation);
+                if(locationInput) {
                     locationInput.value = "📍 Delivering to your location";
                     locationInput.style.color = "var(--success)";
-                },
-                () => { 
-                    locationInput.value = "Location access denied. Tap to retry."; 
+                }
+            },
+            (err) => {
+                console.log("Location blocked or failed:", err.message);
+                userLocation = null;
+                if(locationInput) {
+                    locationInput.value = "Location blocked. Tap to retry.";
                     locationInput.style.color = "#e74c3c";
                 }
-            );
+            },
+            {
+                timeout: 5000,
+                enableHighAccuracy: true
+            }
+        );
+    }
+
+    // Auto-fetch location on load
+    getLocationSafe();
+
+    // Allow user to retry if they tap the location bar
+    if(locationTrigger) {
+        locationTrigger.addEventListener("click", getLocationSafe);
+    }
+
+    // === FALLBACK LOCATION HELPER ===
+    function getLocationText() {
+        if (userLocation) {
+            return `https://maps.google.com/?q=${userLocation}`;
+        } else {
+            return "Location not provided. Customer will share via chat.";
         }
     }
 
-    // Call it automatically when app opens
-    fetchUserLocation();
-
-    // Also call if user taps the bar manually
-    if(locationTrigger) {
-        locationTrigger.addEventListener("click", fetchUserLocation);
-    }
-
-    // === 8. RENDER & CART SYSTEM ===
+    // === 7. RENDER & CART SYSTEM ===
     function renderProducts(items) {
         gridContainer.innerHTML = "";
         
         if (items.length === 0) {
-            gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No products found in this category.</p>`;
+            gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No products found.</p>`;
             return;
         }
 
@@ -208,12 +229,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === 9. PREMIUM PAYMENT MODAL ===
+    // === 8. PAYMENT MODAL ===
     const paymentModal = document.getElementById("payment-modal");
     const closePaymentBtn = document.getElementById("close-payment");
     const payOptions = document.querySelectorAll(".pay-option");
     const codFlow = document.getElementById("cod-flow");
-    const upiFlow = document.getElementById("upi-flow");
     const codConfirmBtn = document.getElementById("cod-confirm-btn");
 
     let currentOrderTotal = 0;
@@ -223,13 +243,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const cartKeys = Object.keys(cart);
             if (cartKeys.length === 0) return;
 
-            // 🛑 STRICT LOCATION CHECK
-            if (!userLocation) {
-                alert("📍 Please allow GPS location access so we know where to deliver your order!");
-                if(locationTrigger) locationTrigger.click();
-                return; // Blocks the payment screen
-            }
-
+            // NO LOCATION BLOCKING! User can proceed even if GPS failed.
+            
             currentOrderTotal = 0;
             cartKeys.forEach(id => {
                 const product = products.find(p => p.id === parseInt(id));
@@ -239,7 +254,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("pay-amount-display").innerText = `₹${currentOrderTotal}`;
             payOptions.forEach(opt => opt.classList.remove("selected"));
             codFlow.style.display = "none";
-            upiFlow.style.display = "none";
             paymentModal.classList.add("active");
         });
     }
@@ -254,60 +268,18 @@ document.addEventListener("DOMContentLoaded", () => {
             radio.checked = true;
             if (radio.value === "cod") {
                 codFlow.style.display = "block";
-                upiFlow.style.display = "none";
-            } else {
-                upiFlow.style.display = "block";
-                codFlow.style.display = "none";
             }
         });
     });
 
     if(codConfirmBtn) {
         codConfirmBtn.addEventListener("click", function() {
-            finalizeWhatsAppOrder(cart, currentOrderTotal, "Cash on Delivery", null);
+            finalizeWhatsAppOrder(cart, currentOrderTotal, "Cash on Delivery");
         });
     }
 
-    window.triggerUPI = function(appName) {
-        localStorage.setItem("pendingOrder", JSON.stringify({
-            savedCart: cart,
-            savedTotal: currentOrderTotal
-        }));
-        paymentModal.classList.remove("active");
-        const upiUrl = `upi://pay?pa=${BUSINESS_UPI_ID}&pn=ShakeToHome&am=${currentOrderTotal}&cu=INR`;
-        window.location.href = upiUrl;
-    };
-
-    function checkPostPaymentReturn() {
-        const pendingOrderData = localStorage.getItem("pendingOrder");
-        if (pendingOrderData && document.getElementById("post-payment-modal")) {
-            document.getElementById("post-payment-modal").classList.add("active");
-        }
-    }
-
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === 'visible') checkPostPaymentReturn();
-    });
-
-    const finalizeWhatsappBtn = document.getElementById("finalize-whatsapp-btn");
-    if(finalizeWhatsappBtn) {
-        finalizeWhatsappBtn.addEventListener("click", () => {
-            const pendingOrderData = localStorage.getItem("pendingOrder");
-            if (!pendingOrderData) return;
-            const { savedCart, savedTotal } = JSON.parse(pendingOrderData);
-            
-            finalizeWhatsAppOrder(savedCart, savedTotal, "UPI (Paid)", null);
-            
-            localStorage.removeItem("pendingOrder");
-            document.getElementById("post-payment-modal").classList.remove("active");
-            cart = {};
-            updateCartUI();
-            renderProducts(products);
-        });
-    }
-
-    // === 10. MASTER WHATSAPP, FIREBASE & TRACKING SYSTEM ===
-    async function finalizeWhatsAppOrder(activeCart, total, paymentMode, appName) {
+    // === 9. WHATSAPP, FIREBASE & TRACKING SYSTEM (UPDATED FALLBACK) ===
+    async function finalizeWhatsAppOrder(activeCart, total, paymentMode) {
         const orderId = "SHK" + Math.floor(1000 + Math.random() * 9000);
         
         let itemsString = "";
@@ -316,7 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
             itemsString += `▪ ${activeCart[id]}x ${product.name}\n`;
         });
 
-        const locationLink = userLocation ? `https://maps.google.com/?q=${userLocation}` : "Not provided";
+        // 🚀 SAFELY FETCH LOCATION OR FALLBACK TEXT
+        const locationText = getLocationText();
 
         console.log("Saving order to Firestore...");
         try {
@@ -325,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 items: itemsString,
                 total: total,
                 paymentMethod: paymentMode,
-                location: locationLink,
+                location: locationText, // Safely handles missing GPS
                 status: "pending",
                 timestamp: serverTimestamp()
             });
@@ -336,26 +309,34 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // WhatsApp Message formatting
         let text = `*NEW ORDER* 🚨\n\n*Order ID:* ${orderId}\n\n*Items:*\n${itemsString}\n`;
         text += `*Total:* ₹${total}\n*Payment:* ${paymentMode}\n`;
-        if (paymentMode === "UPI (Paid)") text += `*UPI ID:* ${BUSINESS_UPI_ID}\n`;
-        text += `*Location:*\n${locationLink}\n\n`;
+        text += `*Location:*\n${locationText}\n\n`;
         text += `📍 *TRACK YOUR ORDER LIVE HERE:*\n`;
         text += `https://shaketohome.github.io/track.html?orderId=${orderId}`;
 
         const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
         
-        // Hide payment modal
         if(paymentModal) paymentModal.classList.remove("active");
+
+        // 🚀 UX IMPROVEMENT: Alert the user to share location if GPS failed
+        if (!userLocation) {
+            alert("⚠️ Location not detected. Please make sure to send your delivery address or share your live location in the WhatsApp chat!");
+        }
         
         // Show Swiggy Style Success Animation
         const successOverlay = document.getElementById("success-overlay");
-        if(successOverlay) successOverlay.classList.add("active");
-
-        // Wait for animation, then redirect to Tracking Map & Open WhatsApp
-        setTimeout(() => {
+        if(successOverlay) {
+            successOverlay.classList.add("active");
+            setTimeout(() => {
+                window.open(waUrl, '_blank');
+                window.location.href = `track.html?orderId=${orderId}`;
+            }, 1500);
+        } else {
+            // Fallback if animation missing
             window.open(waUrl, '_blank');
             window.location.href = `track.html?orderId=${orderId}`;
-        }, 1500);
+        }
     }
 });
