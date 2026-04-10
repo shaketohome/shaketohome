@@ -39,12 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 20, name: "Strawberry Mojito", price: 80, category: "mojito", img: "strawberry mojito.jpeg" }
     ];
 
+     // === 3. STATE ===
     let cart = {}; 
+    let userLocation = null;
     const WA_NUMBER = "917702622925"; 
     const BUSINESS_UPI_ID = "7569874341@ptsbi"; 
 
+    // === 4. DOM ELEMENTS ===
     const gridContainer = document.getElementById("product-grid");
-    const categoryBar = document.getElementById("category-bar"); 
+    const categoryBar = document.getElementById("category-bar"); // Added category element
     const searchInput = document.getElementById("search-input");
     const locationTrigger = document.getElementById("location-trigger");
     const locationInput = document.getElementById("location-input");
@@ -52,74 +55,68 @@ document.addEventListener("DOMContentLoaded", () => {
     const headerCartBadge = document.getElementById("cart-badge");
     const orderBtn = document.getElementById("order-btn");
 
+    // === 5. CATEGORY FILTER LOGIC ===
     const categoryList = ["All", "Milkshakes", "Juices", "Cakes", "Puff", "Biryani", "Mojito"];
     let activeCategory = "All";
 
     function renderCategoryBar() {
         if (!categoryBar) return;
-        categoryBar.innerHTML = ""; 
+        categoryBar.innerHTML = ""; // Clear existing
+        
         categoryList.forEach(cat => {
             const btn = document.createElement("button");
             btn.className = `category-btn tap-effect ${cat === activeCategory ? 'active' : ''}`;
             btn.innerText = cat;
+            
             btn.addEventListener("click", () => {
                 activeCategory = cat;
-                renderCategoryBar(); 
-                filterProducts();    
+                renderCategoryBar(); // Highlight new button
+                filterProducts();    // Filter grid
             });
+            
             categoryBar.appendChild(btn);
         });
     }
 
     function filterProducts() {
         if (activeCategory === "All") {
-            renderProducts(products); 
+            renderProducts(products); // Show all
         } else {
             const filtered = products.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
-            renderProducts(filtered); 
+            renderProducts(filtered); // Show filtered
         }
     }
 
+    // === 6. INIT ===
     if(gridContainer) {
-        renderCategoryBar(); 
-        filterProducts();    
+        renderCategoryBar(); // Load categories
+        filterProducts();    // Load products
     }
+    checkPostPaymentReturn(); 
 
-    function getLocationPromise() {
-        return new Promise((resolve) => {
-            if (!navigator.geolocation) {
-                resolve(null);
-                return;
+    // === 7. LOCATION LOGIC ===
+    if(locationTrigger) {
+        locationTrigger.addEventListener("click", () => {
+            if ("geolocation" in navigator) {
+                locationInput.value = "Fetching GPS...";
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        userLocation = `${pos.coords.latitude},${pos.coords.longitude}`;
+                        locationInput.value = "📍 Delivering to your location";
+                        locationInput.style.color = "var(--success)";
+                    },
+                    () => { locationInput.value = "Location access denied"; }
+                );
             }
-            navigator.geolocation.getCurrentPosition(
-                (pos) => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
-                () => resolve(null),
-                { timeout: 7000, enableHighAccuracy: true }
-            );
         });
     }
 
-    async function initLocationUI() {
-        if(locationInput) locationInput.value = "Fetching location...";
-        const loc = await getLocationPromise();
-        if (loc && locationInput) {
-            locationInput.value = "📍 Delivering to your location";
-            locationInput.style.color = "var(--success)";
-        } else if (locationInput) {
-            locationInput.value = "Location blocked. Tap to retry.";
-            locationInput.style.color = "#e74c3c";
-        }
-    }
-
-    initLocationUI();
-    if(locationTrigger) {
-        locationTrigger.addEventListener("click", initLocationUI);
-    }
-
+    // === 8. RENDER & CART SYSTEM ===
     function renderProducts(items) {
         gridContainer.innerHTML = "";
+        
         if (items.length === 0) {
-            gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No products found.</p>`;
+            gridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">No products found in this category.</p>`;
             return;
         }
 
@@ -188,20 +185,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // === 9. PREMIUM PAYMENT MODAL ===
     const paymentModal = document.getElementById("payment-modal");
     const closePaymentBtn = document.getElementById("close-payment");
     const payOptions = document.querySelectorAll(".pay-option");
     const codFlow = document.getElementById("cod-flow");
+    const upiFlow = document.getElementById("upi-flow");
     const codConfirmBtn = document.getElementById("cod-confirm-btn");
 
     let currentOrderTotal = 0;
-    let selectedPaymentMode = "Cash on Delivery";
 
     if(orderBtn) {
         orderBtn.addEventListener("click", () => {
             const cartKeys = Object.keys(cart);
             if (cartKeys.length === 0) return;
-            
+
             currentOrderTotal = 0;
             cartKeys.forEach(id => {
                 const product = products.find(p => p.id === parseInt(id));
@@ -211,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("pay-amount-display").innerText = `₹${currentOrderTotal}`;
             payOptions.forEach(opt => opt.classList.remove("selected"));
             codFlow.style.display = "none";
+            upiFlow.style.display = "none";
             paymentModal.classList.add("active");
         });
     }
@@ -223,44 +222,63 @@ document.addEventListener("DOMContentLoaded", () => {
             this.classList.add("selected");
             const radio = this.querySelector('input[type="radio"]');
             radio.checked = true;
-            
             if (radio.value === "cod") {
-                selectedPaymentMode = "Cash on Delivery";
                 codFlow.style.display = "block";
-            } else if (radio.value === "upi") {
-                selectedPaymentMode = "UPI Payment";
-                codFlow.style.display = "block";
+                upiFlow.style.display = "none";
+            } else {
+                upiFlow.style.display = "block";
+                codFlow.style.display = "none";
             }
         });
     });
 
     if(codConfirmBtn) {
         codConfirmBtn.addEventListener("click", function() {
-            if (selectedPaymentMode === "UPI Payment") {
-                paymentModal.classList.remove("active");
-                const upiUrl = `upi://pay?pa=${BUSINESS_UPI_ID}&pn=ShakeToHome&am=${currentOrderTotal}&cu=INR`;
-                window.location.href = upiUrl;
-                setTimeout(() => finalizeWhatsAppOrder(cart, currentOrderTotal, selectedPaymentMode), 2000);
-            } else {
-                finalizeWhatsAppOrder(cart, currentOrderTotal, selectedPaymentMode);
-            }
+            paymentModal.classList.remove("active");
+            finalizeWhatsAppOrder(cart, currentOrderTotal, "Cash on Delivery", null);
         });
     }
 
-    async function finalizeWhatsAppOrder(activeCart, total, paymentMode) {
-        const confirmBtn = document.getElementById("cod-confirm-btn");
-        const originalBtnText = confirmBtn.innerText;
-        confirmBtn.innerText = "Processing GPS..."; 
-        
-        const userLocation = await getLocationPromise();
+    window.triggerUPI = function(appName) {
+        localStorage.setItem("pendingOrder", JSON.stringify({
+            savedCart: cart,
+            savedTotal: currentOrderTotal
+        }));
+        paymentModal.classList.remove("active");
+        const upiUrl = `upi://pay?pa=${BUSINESS_UPI_ID}&pn=ShakeToHome&am=${currentOrderTotal}&cu=INR`;
+        window.location.href = upiUrl;
+    };
 
-        let locationText;
-        if (userLocation) {
-            locationText = `https://maps.google.com/?q=${userLocation}`;
-        } else {
-            locationText = "Location not provided. Please ask customer on WhatsApp.";
+    function checkPostPaymentReturn() {
+        const pendingOrderData = localStorage.getItem("pendingOrder");
+        if (pendingOrderData && document.getElementById("post-payment-modal")) {
+            document.getElementById("post-payment-modal").classList.add("active");
         }
+    }
 
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'visible') checkPostPaymentReturn();
+    });
+
+    const finalizeWhatsappBtn = document.getElementById("finalize-whatsapp-btn");
+    if(finalizeWhatsappBtn) {
+        finalizeWhatsappBtn.addEventListener("click", () => {
+            const pendingOrderData = localStorage.getItem("pendingOrder");
+            if (!pendingOrderData) return;
+            const { savedCart, savedTotal } = JSON.parse(pendingOrderData);
+            
+            finalizeWhatsAppOrder(savedCart, savedTotal, "UPI (Paid)", null);
+            
+            localStorage.removeItem("pendingOrder");
+            document.getElementById("post-payment-modal").classList.remove("active");
+            cart = {};
+            updateCartUI();
+            renderProducts(products); // Reset grid
+        });
+    }
+
+    // === 10. MASTER WHATSAPP & FIREBASE SYSTEM ===
+    async function finalizeWhatsAppOrder(activeCart, total, paymentMode, appName) {
         const orderId = "SHK" + Math.floor(1000 + Math.random() * 9000);
         
         let itemsString = "";
@@ -269,46 +287,35 @@ document.addEventListener("DOMContentLoaded", () => {
             itemsString += `▪ ${activeCart[id]}x ${product.name}\n`;
         });
 
+        const locationLink = userLocation ? `https://maps.google.com/?q=${userLocation}` : "Not provided";
+
+        console.log("Saving order to Firestore...");
         try {
             await setDoc(doc(window.db, "orders", orderId), {
                 orderId: orderId,
                 items: itemsString,
                 total: total,
                 paymentMethod: paymentMode,
-                location: locationText,
+                location: locationLink,
                 status: "pending",
                 timestamp: serverTimestamp()
             });
+            console.log("✅ Order saved successfully! ID: ", orderId);
         } catch (error) {
-            alert("Database Error! Please check your connection.");
-            confirmBtn.innerText = originalBtnText;
-            return;
+            console.error("❌ FIREBASE ERROR:", error);
+            alert("Database Error: " + error.message);
         }
 
-        let text = `*NEW ORDER* 🚨\n\n*Order ID:* ${orderId}\n\n*Items:*\n${itemsString}\n`;
+        let text = `Hi, I have placed an order.\n\n*Order ID:* ${orderId}\n\n*Order:*\n${itemsString}\n`;
         text += `*Total:* ₹${total}\n*Payment:* ${paymentMode}\n`;
-        text += `*Location:*\n${locationText}\n\n`;
-        text += `📍 *TRACK YOUR ORDER LIVE HERE:*\n`;
-        text += `https://shaketohome.github.io/track.html?orderId=${orderId}`;
+        if (paymentMode === "UPI (Paid)") text += `*UPI ID:* ${BUSINESS_UPI_ID}\n`;
+        text += `*Location:*\n${locationLink}`;
 
         const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
-        
-        if(paymentModal) paymentModal.classList.remove("active");
-
-        if (!userLocation) {
-            alert("⚠️ Location not detected. Please make sure to share your live location in the WhatsApp chat!");
-        }
-        
-        const successOverlay = document.getElementById("success-overlay");
-        if(successOverlay) {
-            successOverlay.classList.add("active");
-            setTimeout(() => {
-                window.open(waUrl, '_blank');
-                window.location.href = `track.html?orderId=${orderId}`;
-            }, 1500);
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            window.location.href = waUrl;
         } else {
             window.open(waUrl, '_blank');
-            window.location.href = `track.html?orderId=${orderId}`;
         }
     }
 });
