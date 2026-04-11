@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ShakeToHome</title>
+    
     <meta name="theme-color" content="#ff5200">
-    <link rel="stylesheet" href="style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="./style.css?v=7">
 </head>
 <body>
     <header class="app-header">
@@ -21,7 +29,7 @@
             <h1>ShakeToHome</h1>
         </div>
         <div class="header-actions">
-            <div class="icon-btn" id="header-cart-btn">
+            <div class="icon-btn tap-effect" id="header-cart-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                 <span class="cart-badge" id="cart-badge">0</span>
             </div>
@@ -30,7 +38,7 @@
 
     <main class="main-content">
         <section class="hero">
-            <div class="input-group" id="location-trigger">
+            <div class="input-group tap-effect" id="location-trigger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#ff5200" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 <input type="text" id="location-input" placeholder="Requesting location..." readonly>
             </div>
@@ -55,7 +63,7 @@
             <span id="bottom-cart-items">1 item</span>
             <span id="bottom-cart-total">₹0</span>
         </div>
-        <button class="order-btn" id="checkout-btn">
+        <button class="order-btn tap-effect" id="checkout-btn">
             Checkout
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
         </button>
@@ -65,7 +73,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Select Payment</h3>
-                <span class="close-btn" id="close-payment">×</span>
+                <span class="close-btn tap-effect" id="close-payment">×</span>
             </div>
             
             <div class="payment-body">
@@ -82,7 +90,7 @@
                     </label>
                 </div>
 
-                <button class="order-btn action-btn" id="confirm-order-btn">
+                <button class="order-btn action-btn tap-effect" id="confirm-order-btn">
                     Confirm Order
                 </button>
             </div>
@@ -95,6 +103,6 @@
         <p>Connecting to WhatsApp...</p>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="./script.js?v=7"></script>
 </body>
 </html>
