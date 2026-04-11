@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shaketohome-v10';
+const CACHE_NAME = 'shaketohome-v11';
 
 const ASSETS_TO_CACHE = [
   './',
